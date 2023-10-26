@@ -1,4 +1,4 @@
-:- consult('artistasRepo.pl'), consult('artistas.pl'), consult('musicafuncs.pl'), consult('util.pl'), consult('dashBoard.pl'), consult('bandas.pl'), consult('bandasfuncs.pl').
+:- consult('artistasRepo.pl'), consult('artistas.pl'), consult('musicafuncs.pl'), consult('util.pl'), consult('dashBoard.pl'), consult('bandas.pl'), consult('bandaservice.pl').
 :- dynamic (artista/5).
 :- dynamic (banda/8).
 :- use_module(library(http/json)).
@@ -27,6 +27,7 @@ menu2('1') :-
   writeln('6. Remover banda atual'),
   writeln('7. Alterar banda atual'),
   writeln('0. Voltar'),
+
   writeln('=================\n'),
   read(Opcao),
   upperCase(Opcao, OpcaoUpper),
@@ -285,7 +286,7 @@ funcoesDistintasToScreen([H|T]):-
 
 %AREA BANDA
  opcaoBanda(_):- writeln('Opcao invalida').
-opcaoBanda('1') :-
+opcaoBanda('1'):-
   writeln('\n================='),
   writeln('Digite o nome da banda'),
   read(Nome),
@@ -310,52 +311,44 @@ opcaoBanda('1') :-
   writeln('\n================='),
   writeln('Digite a avaliação dela'),
   read(Avaliacao),
-  
- 
   split_string(Compatual, ',', ',', MembrosAtuais),
   split_string(Compold, ',', ',', MembrosAntigos),
-
- 
   split_string(Musicas, ',', ',', MusicasLista),
-
- 
   split_string(Instrumentos, ',', ',', InstrumentosLista),
 
-  
-  adicionar_banda(Nome, MembrosAtuais, MembrosAntigos, MusicasLista, InstrumentosLista, DataLancamento, Genero, Avaliacao).
+  adicionaBanda(Nome, MembrosAtuais, MembrosAntigos, MusicasLista, InstrumentosLista, DataLancamento, Genero, Avaliacao).
 
 opcaoBanda('2') :-
   writeln('\n================='),
-  write(' - Nome da banda (serao apresentados todos os artistas de mesmo nome)'),
+  write(' - Nome da banda '),
   read(Nome),
-  buscar_banda_por_nome(Nome, Banda).
+  buscarBandaPorNome(Nome, Banda).
 
 
 opcaoBanda('3') :-
   writeln('\n================='),
   write(' - Nome do artista (serao apresentados todas as bandas que esse artista esta no momento)'),
   read(Nome),
-  filtrar_bandas_por_artista(Nome, BandasFiltradas).
+  bandasPorArtista(Nome, BandasFiltradas).
 
 opcaoBanda('4') :-
   writeln('\n================='),
   write(' - genero  (serao apresentados todas as bandas que possuem esse genero)'),
   read(Nome),
-  filtrar_bandas_por_genero(Nome, BandasFiltradas).
+  filtroBandasPorGenero(Nome, BandasFiltradas).
 
 
 opcaoBanda('5') :-
   writeln('\n================='),
   write(' - instrumento  (serao apresentados todas as bandas que possuem esse instrumento em sua composição)'),
   read(Nome),
-  filtrar_bandas_por_instrumento(Nome, BandasFiltradas).
+  bandasPorInstrumento(Nome, BandasFiltradas).
 
 opcaoBanda('6') :-
   writeln('\n================='),
   write(' - digite o nome do antigo membro  (serao apresentados todas as bandas que possuiam esse membro)'),
   read(Nome),
-  buscar_bandas_por_membro_antigo(Nome, BandasFiltradas).
-
+  bandasPorArtistaantigo(Nome, BandasFiltradas).
 
 opcaoBanda('7') :-
   writeln('\n================='),
