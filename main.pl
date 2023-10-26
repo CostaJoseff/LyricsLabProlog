@@ -244,7 +244,8 @@ opcaoDashBoard('4') :-
   random(1, Len, IdAleatorio),
   buscarArtistaPorId(IdAleatorio).
 opcaoDashBoard('D') :-
-  dadosGerais().
+  dadosGerais(),
+  dadosGeraisMusica.
 
 opcaoDashBoard('2') :-
   writeln('\n================='),
@@ -254,8 +255,16 @@ opcaoDashBoard('2') :-
   printarGrafico(Resultado),
   sleep(5).
 
+opcaoDashBoard('5') :- 
+  sugerirMusica(Musica),
+  exibirMusica(Musica),
+  sleep(5).
+
+
+
 opcaoDashBoard('0') :- lyricsLab.
 opcaoDashBoard(_) :- writeln('Opcao invalida'), sleep(2), menu2('4').
+
 
 
 %AREA BANDA

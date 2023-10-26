@@ -295,8 +295,89 @@ reduzString([], N, [' ' | T]) :-
 reduzString([H | T1], N, [H | T2]) :-
     NovoN is N - 1,
     reduzString(T1, NovoN, T2).
+
+%Sugerir Musica
+
+sugerirMusica(Musica) :-
+    todasAsMusicas(Musicas),
+    length(Musicas, Tamanho),
+    random(0, Tamanho, ValorRandomizado),
+    nth0(ValorRandomizado, Musicas, Musica).
+
+%Dados Gerais
+
+dadosGeraisMusica :-
+    todasAsMusicas(Musicas),
+    length(Musicas, TantoDeMusicas),
+    writeln('================================Quantidade de Musicas================================='),
+    write(TantoDeMusicas), ln,
+    writeln('======================================================================================'),
+    totalInsMusic.
+
+%Quantidade de musicas com os diversos instrumentos cadastrados
     
+totalInsMusic :- 
+    diferentesInstrumento(Instrumentos),
+    qtdRegistradaDeInstrumentos(Instrumentos, Resultado),
+    writeln('============Quantidade de musicas com os diversos instrumentos cadastrados============'),
+    printarInsMusic(Instrumentos, Resultado),
+    writeln('======================================================================================').
+
+printarInsMusic([], []).
+printarInsMusic([H1 | T1], [H2 | T2]) :-
+    format('~q : ~q', [H1, H2]),ln,
+    printarInsMusic(T1, T2).
+
+
+qtdRegistradaDeInstrumentos([], []).
+qtdRegistradaDeInstrumentos([Instrumento | T] , [HRs | TRs]) :-
+    qtdResistradaIns(Instrumento, HRs),
+    qtdRegistradaDeInstrumentos(T, TRs).
+
+
+
+qtdResistradaIns(Instrumento, Resultado) :-
+    todasAsMusicas(Musicas),
+    qtdResistradaIns2(Instrumento, Musicas, Resultado).
+
+qtdResistradaIns2(_, [], 0).
+qtdResistradaIns2(Instrumento, [musica(_, _, Instrumentos, _, _, _, _, _, _) | T],
+    Resultado) :-
+        member(Instrumento, Instrumentos),
+        qtdResistradaIns2(Instrumento, T, Resto),
+        NovoResultado is Resto + 1,
+        Resultado = NovoResultado.
+qtdResistradaIns2(Instrumento, [musica(_, _, Instrumentos, _, _, _, _, _, _) | T],
+    Resultado) :-
+        not(member(Instrumento, Instrumentos)),
+        qtdResistradaIns2(Instrumento, T, Resultado).
     
 
+
+
+diferentesInstrumento(Diferentes):-
+    todasAsMusicas(Musicas),
+    igInstrumentos(Musicas, Iguais),
+    removeDuplicatas(Iguais, Diferentes).
+
+igInstrumentos([], []).
+igInstrumentos([musica(_,_,Instrumentos,_,_,_,_,_,_) | T], Resultado) :-
+    igInstrumentos(T, Resto),
+    append(Instrumentos, Resto, Resultado).
+
+
+
+removeDuplicatas( [] , []).
+removeDuplicatas([Diff | T], [Diff | Resultado]):-
+    not(temMais(Diff,T)),
+    removeDuplicatas(T, Resultado).
+removeDuplicatas([H1 | T1], Resultado) :-
+    temMais(H1, T1),
+    removeDuplicatas(T1, Resultado).
+
+
+temMais(Instrumento, [Instrumento | _]).
+temMais(Instrumento, [_ | T]) :-
+    temMais(Instrumento, T).
 
 
