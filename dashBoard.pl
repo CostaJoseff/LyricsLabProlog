@@ -34,15 +34,30 @@ dashBoartArtistaToString(Artista, Indice):-
   write(NomeMusica), write(' e a melhor musica do artista com '), write(AvaliacaoMusica), writeln(' de avaliacao'),
   writeln('#=#=#=#=#=#=#=#=#=#').
 
-dadosGerais() :-
+totalArtistasPorFuncao(Funcao, Total):-
+  upcase_atom(Funcao, FuncaoUpCase),
+  findall([Funcoes],
+          (artista(_, _, _, Funcoes, _),
+          contem(FuncaoUpCase, Funcoes)),
+          ArtistasFiltrados),
+  length(ArtistasFiltrados, Total).
+
+dadosGerais(Dados) :-
   getAllArtistas(TodosOsArtistas),
   length(TodosOsArtistas, TotalDeArtistas),
   append([], [TotalDeArtistas], L1),
   contarFuncoes(TodosOsArtistas, [], TotalDeFuncoes),
   append(L1, [TotalDeFuncoes], L2),
   contarArtistasSolo(TotalArtistasSolo),
-  append(L2, [TotalArtistasSolo], L3).
+  append(L2, [TotalArtistasSolo], L3),
+  getFuncoesDistintas(TodosOsArtistas, [], FuncoesDistintas),
+  append(L3, [FuncoesDistintas], Dados).
 
+getFuncoesDistintas([], Temp, Temp).
+getFuncoesDistintas([H|T], Temp, Retorno):-
+  nth0(3, H, Funcoes),
+  inserirDistintos(Funcoes, Temp, NovaTemp),
+  getFuncoesDistintas(T, NovaTemp, Retorno).
 
 contarFuncoes([], Temp, Total):- length(Temp, Total).
 contarFuncoes([H|T], Temp, Total):-

@@ -235,7 +235,7 @@ opcaoMusica('6') :-
 % Área DashBoard
 opcaoDashBoard('1') :-
   writeln('\n================='),
-  writeln('Informe quantos artistas vao aparecer no TOP'),
+  write('Informe quantos artistas vao aparecer no TOP'),
   read(Total),
   topNArtistas(Total).
 opcaoDashBoard('4') :-
@@ -245,8 +245,19 @@ opcaoDashBoard('4') :-
   buscarArtistaPorId(IdAleatorio).
 opcaoDashBoard('D') :-
   dadosGerais(),
-  dadosGeraisMusica,
   sleep(5).
+  dadosGerais(Dados),
+  nth0(0, Dados, TotalDeArtistas),
+  nth0(1, Dados, TotalDeFuncoes),
+  nth0(2, Dados, TotalArtistasSolo),
+  nth0(3, Dados, FuncoesDistintas),
+  writeln('\n================='),
+  format('Existem ~w artistas registrados no LyricsLab\n', TotalDeArtistas), sleep(2),
+  format('De todos os artistas existem ~w funcoes distintas\n', TotalDeFuncoes), sleep(2),
+  writeln('Dentre essas funcoes, existem:'), sleep(2),
+  funcoesDistintasToScreen(FuncoesDistintas),
+  format('Dentre os artistas existem ~w que nao participam de uma banda especifica\n', TotalArtistasSolo), sleep(2),
+  dadosGeraisMusica.
 
 opcaoDashBoard('2') :-
   writeln('\n================='),
@@ -266,6 +277,11 @@ opcaoDashBoard('5') :-
 opcaoDashBoard('0') :- lyricsLab.
 opcaoDashBoard(_) :- writeln('Opcao invalida'), sleep(2), menu2('4').
 
+funcoesDistintasToScreen([]).
+funcoesDistintasToScreen([H|T]):-
+  totalArtistasPorFuncao(H, Total),
+  format(' - ~w ~ws\n', [Total, H]), sleep(1),
+  funcoesDistintasToScreen(T).
 
 
 %AREA BANDA
