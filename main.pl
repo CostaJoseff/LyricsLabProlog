@@ -244,8 +244,7 @@ opcaoDashBoard('4') :-
   random(1, Len, IdAleatorio),
   buscarArtistaPorId(IdAleatorio).
 opcaoDashBoard('D') :-
-  dadosGerais(),
-  sleep(5).
+
   dadosGerais(Dados),
   nth0(0, Dados, TotalDeArtistas),
   nth0(1, Dados, TotalDeFuncoes),
