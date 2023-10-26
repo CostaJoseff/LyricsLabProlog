@@ -245,7 +245,8 @@ opcaoDashBoard('4') :-
   buscarArtistaPorId(IdAleatorio).
 opcaoDashBoard('D') :-
   dadosGerais(),
-  dadosGeraisMusica.
+  dadosGeraisMusica,
+  sleep(5).
 
 opcaoDashBoard('2') :-
   writeln('\n================='),
