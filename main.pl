@@ -1,5 +1,6 @@
-:- consult('artistasRepo.pl'), consult('artistas.pl'), consult('musicafuncs.pl'), consult('util.pl'), consult('dashBoard.pl').
+:- consult('artistasRepo.pl'), consult('artistas.pl'), consult('musicafuncs.pl'), consult('util.pl'), consult('dashBoard.pl'), consult('bandas.pl'), consult('bandasfuncs.pl').
 :- dynamic (artista/5).
+:- dynamic (banda/8).
 :- use_module(library(http/json)).
 :- initialization(lyricsLab).
 
@@ -30,6 +31,22 @@ menu2('1') :-
   read(Opcao),
   upperCase(Opcao, OpcaoUpper),
   opcaoArtista(OpcaoUpper).
+
+menu2('2'):-
+  writeln('\n================='),
+  writeln('1. Adicionar uma nova banda'),
+  writeln('2. Buscar pelo banda pelo nome'),
+  writeln('3. filtrar pelo artista '),
+  writeln('4. filtrar pelo genero'),
+  writeln('5. filtrar por instrumento '),
+  writeln('6. filtrar por membros antigos'),
+  writeln('7. Remover banda '),
+  writeln('8. Alterar banda'),
+  writeln('0. Voltar'),
+  writeln('=================\n')
+  read(Opcao),
+  upperCase(Opcao, OpcaoUpper),
+  opcaoBanda(OpcaoUpper).
 menu2('3') :- 
   writeln('\n================='),
   writeln('1. Adicionar uma nova musica'),
@@ -239,3 +256,125 @@ opcaoDashBoard('2') :-
 
 opcaoDashBoard('0') :- lyricsLab.
 opcaoDashBoard(_) :- writeln('Opcao invalida'), sleep(2), menu2('4').
+
+
+%AREA BANDA
+ opcaoBanda(_):- writeln('Opcao invalida').
+opcaoBanda('1') :-
+  writeln('\n================='),
+  writeln('Digite o nome da banda'),
+  read(Nome),
+  writeln('\n================='),
+  writeln('Digite os membros atuais (Separados por virgula)'),
+  read(Compatual),
+  writeln('\n================='),
+  writeln('Digite os membros anteriores (Separados por virgula , caso tenha )'),
+  read(Compold),
+  writeln('\n================='),
+  writeln('Digite as músicas dessa banda (Separadas por vírgula , caso tenha )'),
+  read(Musicas),
+  writeln('\n================='),
+  writeln('Digite os instrumentos dessa banda (Separados por vírgula , caso tenha )'),
+  read(Instrumentos),
+  writeln('\n================='),
+  writeln('Digite a data de lançamento'),
+  read(DataLancamento),
+  writeln('\n================='),
+  writeln('Digite o gênero'),
+  read(Genero),
+  writeln('\n================='),
+  writeln('Digite a avaliação dela'),
+  read(Avaliacao),
+  
+ 
+  split_string(Compatual, ',', ',', MembrosAtuais),
+  split_string(Compold, ',', ',', MembrosAntigos),
+
+ 
+  split_string(Musicas, ',', ',', MusicasLista),
+
+ 
+  split_string(Instrumentos, ',', ',', InstrumentosLista),
+
+  
+  adicionar_banda(Nome, MembrosAtuais, MembrosAntigos, MusicasLista, InstrumentosLista, DataLancamento, Genero, Avaliacao).
+
+opcaoBanda('2') :-
+  writeln('\n================='),
+  write(' - Nome da banda (serao apresentados todos os artistas de mesmo nome)'),
+  read(Nome),
+  buscar_banda_por_nome(Nome, Banda).
+
+
+opcaoBanda('3') :-
+  writeln('\n================='),
+  write(' - Nome do artista (serao apresentados todas as bandas que esse artista esta no momento)'),
+  read(Nome),
+  filtrar_bandas_por_artista(Nome, BandasFiltradas).
+
+opcaoBanda('4') :-
+  writeln('\n================='),
+  write(' - genero  (serao apresentados todas as bandas que possuem esse genero)'),
+  read(Nome),
+  filtrar_bandas_por_genero(Nome, BandasFiltradas).
+
+
+opcaoBanda('5') :-
+  writeln('\n================='),
+  write(' - instrumento  (serao apresentados todas as bandas que possuem esse instrumento em sua composição)'),
+  read(Nome),
+  filtrar_bandas_por_instrumento(Nome, BandasFiltradas).
+
+opcaoBanda('6') :-
+  writeln('\n================='),
+  write(' - digite o nome do antigo membro  (serao apresentados todas as bandas que possuiam esse membro)'),
+  read(Nome),
+  buscar_bandas_por_membro_antigo(Nome, BandasFiltradas).
+
+
+opcaoBanda('7') :-
+  writeln('\n================='),
+  write(' - Nome da banda (essa banda sera removida do sistema)'),
+  read(Nome),
+  remover_banda(Nome).
+
+
+opcaoBanda('8') :-
+  writeln('\n================='),
+  writeln('1. adicionar membro'),
+  writeln('2. remover membro'),
+  writeln('3. adicionar intrumento'),
+  writeln('0. Voltar'),
+  writeln('\n================='),
+  read(Opcao),
+  upperCase(Opcao, OpcaoUpper),
+  opcaoalterar(OpcaoUpper).
+
+opcaoBanda('0') :- lyricsLab.
+
+opcaoalterar(_):- writeln('Opcao invalida').
+opcaoalterar('1') :-
+  writeln('\n================='),
+  write(' - Nome da banda='),
+  read(Bandanome),
+  write(' - Nome do integrante'),
+  read(Nome),
+  adicionar_integrante(Nome,Bandanome).
+
+opcaoalterar('2') :-
+  writeln('\n================='),
+  write(' - Nome da banda='),
+  read(Bandanome),
+  write(' - Nome do integrante'),
+  read(Nome),
+  remover_integrante(Nome,Bandanome).
+
+opcaoalterar('3') :-
+  writeln('\n================='),
+  write(' - Nome da banda='),
+  read(Bandanome),
+  write(' - instrumento'),
+  read(Nome),
+  adicionar_instrumento(Nome,Bandanome).
+opcaoalterar('0') :- lyricsLab.
+  
