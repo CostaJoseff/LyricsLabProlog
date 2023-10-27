@@ -71,3 +71,19 @@ inserirDistintos([_|Ft], Temp, Resultado):- inserirDistintos(Ft, Temp, Resultado
 naoContem([], _):- !.
 naoContem([H|T], Alvo):-
   H \= Alvo, naoContem(T, Alvo).
+
+mediaDasMusicas(_, 0, _, 0).
+mediaDasMusicas([], Len, Somatorio, Media):- Media is Somatorio/Len.
+mediaDasMusicas([H|T], Len, Somatorio, Media):- 
+  nth0(8, H, Avaliacao),
+  NovoSomatorio is Somatorio+Avaliacao,
+  mediaDasMusicas(T, Len, NovoSomatorio, Media).
+
+removerDaLista(_, [], Temp, Temp).
+removerDaLista(Alvo, [H|T], Temp, Resultado):-
+  upperCase(H, HUpper),
+  Alvo == HUpper,
+  append(Temp, T, Resultado), !.
+removerDaLista(Alvo, [H|T], Temp, Resultado):-
+  append(Temp, [H], NovoTemp),
+  removerDaLista(Alvo, T, NovoTemp, Resultado).

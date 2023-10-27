@@ -25,6 +25,10 @@ buscarArtistaPorId(Id):-
   artista(Nome, BandaAtual, BandasAnteriores, Funcoes, Id),
   artistaToScreen([[Nome, BandaAtual, BandasAnteriores, Funcoes]], 1, 1).
 
+buscarArtistaPorId(Id, Artista):-
+  artista(Nome, BandaAtual, BandasAnteriores, Funcoes, Id),
+  Artista = [Nome, BandaAtual, BandasAnteriores, Funcoes].
+
 buscarArtistaPorNome(NomeParaFiltrar) :-
   upcase_atom(NomeParaFiltrar, NomeParaFiltrarUpCase),
   findall([Nome, BandaAtual, BandasAnteriores, Funcoes, _],
@@ -76,11 +80,9 @@ setArtista(Nome, BandaAtual, ListaBandasAnteriores, Funcoes):-
   Id is X + 1,
   assertz(artista(Nome, BandaAtual, ListaBandasAnteriores, Funcoes, Id)),
   format(string(Modelo), 'artista(~q, ~q, ~q, ~q, ~q).~n', [Nome, BandaAtual, ListaBandasAnteriores, Funcoes, Id]),
-  writeln(Modelo),
   write(Stream, Modelo),
   close(Stream),
-  write(Id),
-  writeln(' e o Id do artista cadastrado. Ele e unico e extremamente importante para alteracoes futuras.').
+  format('\n\n~w e o Id do artista cadastrado.\nEsse ID e unico e extremamente importante para efetuar alteracoes.\n\n', Id).
 
 artistaValido(Id, Nome) :- 
   artista(ANome, _, _, _, Id),
@@ -162,7 +164,7 @@ artistaToString(Artista):-
   writeln(L4),
   format(' - Avaliacao ~2f \n', Media),
   writeln('*=*=*=*=*=*=*=*=*=*\n'),
-  sleep(0).
+  sleep(1).
 
 artistaToScreen([], _, _):- writeln('\nNenhum artista para mostrar.\n'), sleep(3).
 artistaToScreen([H|[]], Indice, Len):- write(Indice), artistaToString(H), Time is 2/Len, sleep(Time), !.
@@ -172,10 +174,3 @@ mediaArtista(Nome, Media) :-
   musicasPorArtista(Nome, ListaDeMusicas),
   length(ListaDeMusicas, Len),
   mediaDasMusicas(ListaDeMusicas, Len, 0, Media).
-
-mediaDasMusicas(_, 0, _, 0).
-mediaDasMusicas([], Len, Somatorio, Media):- Media is Somatorio/Len.
-mediaDasMusicas([H|T], Len, Somatorio, Media):- 
-  nth0(8, H, Avaliacao),
-  NovoSomatorio is Somatorio+Avaliacao,
-  mediaDasMusicas(T, Len, NovoSomatorio, Media).
